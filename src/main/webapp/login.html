@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <h3>Username: </h3>
+        <input type="text" name="username" id="username">
+        <h3>Password: </h3>
+        <input type="password" name="password" id="password">
+        <button onclick="loggin()">Loggin</button>
+        
+    </div>
+</body>
+
+<script>
+    function loggin() {
+        let xhtml = new XMLHttpRequest();
+
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+
+        xhtml.open("POST", "http://localhost:8080/TRMS/logging.do", true);
+
+        let info = {
+            username: username,
+            password: password
+        };
+        xhtml.send(JSON.stringify(info));
+        console.log(info);
+       
+        xhtml.onreadystatechange = function(){   
+            if(this.readyState == 4 && this.status == 200){
+            	//console.log(xhtml.response);
+                window.location.replace(xhtml.response);
+                
+            }
+        }
+        
+
+
+    }
+
+
+
+</script>
+
+</html>

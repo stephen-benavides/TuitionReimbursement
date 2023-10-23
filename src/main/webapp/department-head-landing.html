@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <style>
+        #mytable,
+        td {
+            border: 1px solid rgb(26, 139, 120);
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div id="updateInfo">
+        <button onclick="loggout()">Logout</button>
+        <hr>
+        <p>Select Form ID to alter the Information</p>
+        <label for="reimbursement_id">Form ID: </label>
+        <input type="number" name="reimbursement_id" id="reimbursement_id"><br>
+        <label for="status">Status</label>
+        <input type="text" id="status"><br>
+        <label for="comments">Comments</label>
+        <input type="text" id="comments"><br>
+        <p id="emptyfields"></p>
+        <button onclick="updateStatus()">Confirm</button><br>
+        <hr>
+        <!-- <p>If you wish to deny a form please stipulate the reason and hit 'Denied'</p>
+        <button onclick= "updateComments()">Denied</button> -->
+        <p>Use Search to Access User Forms</p>
+        <button onclick="updateUserInfo()" id="search">Search</button>
+        <button onClick="window.location.reload();">Reset</button><br>
+
+
+
+
+    </div>
+    <div id="div1"></div>
+
+</body>
+
+<script>
+
+function loggout(){
+        let xhtml0 = new XMLHttpRequest();
+
+        xhtml0.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                window.location.replace(xhtml0.response);
+            }
+        }
+
+        xhtml0.open("GET", "http://localhost:8080/TRMS/userLogout.do", true);
+        xhtml0.send();
+    }
+
+
+    function updateStatus() {
+        let xhttp2 = new XMLHttpRequest();
+        let status = document.getElementById("status").value;
+        let comments = document.getElementById("comments").value;
+        let reimbursement_id = document.getElementById("reimbursement_id").value;
+
+        if (status == "Denied" && comments == "") {
+            window.alert("You Must Provide a reason");
+            document.getElementById("emptyfields").innerHTML = "You need to submit a comment";
+        }
+
+        else {
+            let values = {
+                status: status,
+                comments: comments,
+                reimbursement_id: reimbursement_id,
+            }
+
+            console.log(values);
+            xhttp2.open("POST", "http://localhost:8080/TRMS/updateFormStatus.do", true);
+            xhttp2.send(JSON.stringify(values));
+
+            document.getElementById("emptyfields").innerHTML = "Done!";
+        }
+
+    }
+
+    // function updateComments() {
+    //     let xhttp3 = new XMLHttpRequest();
+    //     let comments = document.getElementById("comments").value;
+    //     let reimbursement_id = document.getElementById("reimbursement_id").value;
+
+    //     let values = {
+    //         comments: comments,
+    //         reimbursement_id: reimbursement_id,
+
+    //     };
+
+    //     console.log(values);
+    //     xhttp3.open("POST", "http://localhost:8080/TRMS/updateFormComments.do", true);
+    //     xhttp3.send(JSON.stringify(values));
+
+    //     //document.getElementById("emptyfields").innerHTML = "Registration Complete";
+
+    // }
+
+
+    function updateUserInfo() {
+
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+                let obj = JSON.parse(this.responseText);
+                console.log(obj);
+
+
+
+                var tbl = $("<table/>").attr("id", "mytable");
+                $("#div1").append(tbl);
+
+                var tr = "<tr>";
+                var td1 = "<td>" + "Date" + "</td>";
+                var td2 = "<td>" + "Time" + "</td>";
+                var td3 = "<td>" + "Form ID" + "</td>";
+                var td4 = "<td>" + "Firstname" + "</td>";
+                var td5 = "<td>" + "Lastname" + "</td>";
+                var td6 = "<td>" + "Location" + "</td>";
+                var td7 = "<td>" + "Course Type" + "</td>";
+                var td8 = "<td>" + "Grade" + "</td>";
+                var td9 = "<td>" + "Course Cost" + "</td>";
+                var td10 = "<td>" + "Description" + "</td>";
+                var td11 = "<td>" + "Justification" + "</td>";
+                var td12 = "<td>" + "Passing Grade" + "</td>";
+                var td13 = "<td>" + "Status" + "</td>";
+                var td14 = "<td>" + "Comments" + "</td></tr>";
+                $("#mytable").append(tr + td1 + td2 + td3 + td4 + td5 + td6 + td7 + td8 + td9 + td10 + td11 + td12 + td13 + td14);
+
+                for (var i = 0; i < obj.length; i++) {
+
+                    let some = "";
+
+                    switch (obj[i]["course_type_id"]) {
+                        case 1: some = "University Course";
+                            break;
+                        case 2: some = "Seminars";
+                            break;
+                        case 3: some = "Certification Preparation Classes";
+                            break;
+                        case 4: some = "Certification";
+                            break;
+                        case 5: some = "Technical Training";
+                            break;
+                        case 6: some = "Other";
+                            break;
+                    }
+
+
+
+                    var tr = "<tr>";
+                    var td1 = "<td>" + obj[i]["date"] + "</td>";
+                    var td2 = "<td>" + obj[i]["time"] + "</td>";
+                    var td3 = "<td>" + obj[i]["reimbursement_id"] + "</td>";
+                    var td4 = "<td>" + obj[i]["firstname"] + "</td>";
+                    var td5 = "<td>" + obj[i]["lastname"] + "</td>";
+                    var td6 = "<td>" + obj[i]["location"] + "</td>";
+                    var td7 = "<td>" + some + "</td>";
+                    var td8 = "<td>" + obj[i]["grade"] + "</td>";
+                    var td9 = "<td>" + obj[i]["course_cost"] + "</td>";
+                    var td10 = "<td>" + obj[i]["description"] + "</td>";
+                    var td11 = "<td>" + obj[i]["justification"] + "</td>";
+                    var td12 = "<td>" + obj[i]["passing_grade"] + "</td>";
+                    var td13 = "<td>" + obj[i]["status"] + "</td>";
+                    var td14 = "<td>" + obj[i]["comments"] + "</td></tr>";
+
+                    $("#mytable").append(tr + td1 + td2 + td3 + td4 + td5 + td6 + td7 + td8 + td9 + td10 + td11 + td12 + td13 + td14);
+
+                }
+                document.getElementById("search").disabled = true;
+
+            }
+
+
+        }
+
+        xhttp.open("GET", "http://localhost:8080/TRMS/reviewForm.do", true);
+        xhttp.send();
+    }
+</script>
+
+</html>

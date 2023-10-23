@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulary</title>
+</head>
+
+<body>
+
+    <div id="updateInfo">
+        <button onclick="loggout()">Logout</button><br>
+        <button><a href="employee-landing.html">Information</a></button>
+    </div>
+<hr>
+    <div>
+        <label for="fname">First name: </label>
+        <input type="text" name="fname" id="fname"><br>
+        <label for="lname">Last name: </label>
+        <input type="text" name="lname" id="lname"><br>
+        <label for="location">Location: </label>
+        <input type="text" name="location" id="location"><br>
+        <label for="description">Description: </label><br>
+        <textarea name="description" id="description" cols="40" rows="6"></textarea><br>
+        <label for="cost">Cost: </label>
+        <input type="number" name="cost" id="cost"><br>
+        <label for="grade">Grade: </label>
+        <input type="text" name="grade" id="grade"><br>
+        <label for="eventtype">Type of Event: </label>
+        <select name="eventtype" id="eventtype">
+            <option selected disabled value="choose">Choose</option>
+            <option value="1" id="ucourses">University Courses</option>
+            <option value="2" id="seminars">Seminars</option>
+            <option value="3" id="cpc">Certification Preparation Classes</option>
+            <option value="4" id="certification">Certification</option>
+            <option value="5" id="ttraining">Technical Training</option>
+            <option value="6" id="other">Other</option>
+        </select><br>
+        <label for="justification">Work Related Justification: </label><br>
+        <textarea name="justification" id="justification" cols="40" rows="6"></textarea><br>
+        <p id="emptyfields"></p>
+        <input id="file" type="file" name="insertFile" /> <br><br>
+        <button onclick="submit()">Submit</button>
+
+        <!-- <button onclick="loggout()">Logout</button><br> -->
+
+    </div>
+</body>
+
+<script>
+
+    function loggout() {
+        let xhtml0 = new XMLHttpRequest();
+
+        xhtml0.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                window.location.replace(xhtml0.response);
+            }
+        }
+
+        xhtml0.open("GET", "http://localhost:8080/TRMS/userLogout.do", true);
+        xhtml0.send();
+    }
+
+
+    function submit() {
+
+        let xhtml = new XMLHttpRequest();
+
+        let fname = document.getElementById("fname").value;
+        let lname = document.getElementById("lname").value;
+        let location = document.getElementById("location").value;
+        let description = document.getElementById("description").value;
+        let cost = document.getElementById("cost").value;
+        let grade = document.getElementById("grade").value;
+
+        let eventtype = document.getElementById("eventtype").value;
+        console.log("Event type: " + eventtype)
+        // let ucourses = document.getElementById("ucourses").value;
+        // let seminars = document.getElementById("seminars").value;
+        // let cpc = document.getElementById("cpc").value;
+        // let certification = document.getElementById("certification").value;
+        // let ttraining = document.getElementById("ttraining").value;
+        // let other = document.getElementById("other").value;
+
+        let justification = document.getElementById("justification").value;
+
+
+        //OPTIONS
+        // ucourses == "" || seminars == "" || cpc == "" || certification == "" || ttraining == "" || other == ""
+
+        if (fname == "" || lname == "" || location == "" || cost == "" || grade == "" || justification == "") {
+            document.getElementById("emptyfields").innerHTML = "All Fields Are Required!";
+        }
+        else {
+            xhtml.open("POST", "http://localhost:8080/TRMS/addForm.do", true);
+            xhtml.setRequestHeader('Content-Type', 'aplication/json');
+
+
+
+            let values = {
+                firstname: fname,
+                lastname: lname,
+                location: location,
+                description: description,
+                cost: cost,
+                grade: grade,
+
+                course_type_id: eventtype,
+                // ucourses: ucourses,
+                // cpc: cpc,
+                // certification: certification,
+                // ttraining: ttraining,
+                // other : other,
+
+                justification: justification,
+                // file : file
+
+            };
+
+            console.log(values);
+            xhtml.send(JSON.stringify(values));
+
+
+            // xhtml.onreadystatechange = function () {
+            //     if (this.readyState == 4 && this.status == 200) {
+            //         console.log(this.response);
+            //         window.location.replace(xhtml.response);
+            //     }
+
+            // }
+
+            document.getElementById("emptyfields").innerHTML = "Registration Complete";
+        };
+
+
+    }
+
+</script>
+
+</html>

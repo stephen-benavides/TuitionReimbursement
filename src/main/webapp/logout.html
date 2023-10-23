@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+</head>
+<body>
+    <h1>This is the form page</h1>
+    <button onclick="loggout()">Loggout</button>
+</body>
+
+<script>
+    function loggout(){
+        let xhtml0 = new XMLHttpRequest();
+
+        xhtml0.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                window.location.replace(xhtml0.response);
+            }
+        }
+
+        xhtml0.open("GET", "http://localhost:8080/TRMS/userLogout.do", true);
+        xhtml0.send();
+    }
+</script>
+</html>

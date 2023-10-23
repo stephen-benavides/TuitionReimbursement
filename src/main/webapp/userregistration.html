@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRMS Add Employee</title>
+</head>
+
+
+<body>
+    <div>
+        <h3>First Name: </h3>
+        <input type="text" name="Firstname: " id="firstname">
+        <h3>Last Name: </h3>
+        <input type="text" name="Lastname: " id="lastname">
+        <h3>Username: </h3>
+        <input type="text" name="Username: " id="username">
+        <h3>Password: </h3>
+        <input type="text" name="Password: " id="password">
+        <br><br>
+        <button onclick="addEmployee()">Register</button>
+        <p id="emptyfields"></p>
+
+        <button onclick="loggout()">Logout</button><br>
+
+
+    </div>
+</body>
+
+<script>
+
+    function loggout() {
+        let xhtml0 = new XMLHttpRequest();
+
+        xhtml0.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                window.location.replace(xhtml0.response);
+            }
+        }
+
+        xhtml0.open("GET", "http://localhost:8080/TRMS/userLogout.do", true);
+        xhtml0.send();
+    }
+
+    function addEmployee() {
+        let xhttp = new XMLHttpRequest();
+
+
+        let fname = document.getElementById("firstname").value;
+        let lname = document.getElementById("lastname").value;
+        let u = document.getElementById("username").value;
+        let p = document.getElementById("password").value;
+
+        if (fname == "" || lname == "" || u == "" || p == "") {
+            document.getElementById("emptyfields").innerHTML = "All Fields Are Required!";
+        }
+        else {
+            xhttp.open("POST", "http://localhost:8080/TRMS/userregistration.do", true);
+            xhttp.setRequestHeader('Content-Type', 'aplication/json');
+
+            let values = {
+                firstname: fname,
+                lastname: lname,
+                username: u,
+                password: p
+            };
+            //console.log(values);
+            xhttp.send(JSON.stringify(values));
+            document.getElementById("emptyfields").innerHTML = "Registration Complete";
+
+
+        }
+
+    }
+
+</script>
+
+</html>
